@@ -4,7 +4,7 @@ def makeCommancList()
     #正規表現の定義
 
     result[0] = /^(s|t[stn]|n)(.*)/ #impを表す正規表現
-    cmdMap = {}#impをキーとし、操作を表現する正規表現,またその操作を表すProcを要素としてもつリスト
+    cmdMap = {}#impをキーとし、操作を表現する正規表現とパラメータの有無を表す連想配列からなるリストを要素とする連想配列
 
     stacNeedParameters = {}#パラメーターが必要かどうか
     stacNeedParameters["s"] = true #nil == falseとされるので必要なものだけ
@@ -35,7 +35,7 @@ end
 
 
 
-def strToBinary(str)#文字列を2真数に変換する
+def strToBinary(str)#命令の文字列を2進数の文字列に変換
     #commandListうち、\s = 0 , \t = 1
     result = ""
     count = 0
@@ -45,7 +45,7 @@ def strToBinary(str)#文字列を2真数に変換する
             result += "0"
         elsif data == "t" then
             result += "1"
-        elsif str.length != count then #最後の文字以外でnがきたらエラー(デバッグ用)
+        elsif str.length != count then #最後の文字以外でnがきたらエラー
             raise "エラー"
         end
     }
@@ -55,13 +55,13 @@ end
 
 
 
-class StackAndHeapEditer #後に使うので
+class StackAndHeapEditer 
     @@stac = []
     @@hiep = {}
     @@programCounter = 0
     @@cmdMap = {}
     @@endFlag = false
-    @@callPoint = [];#呼び出し元を記録するためのスタック
+    @@callPoint = [];#呼び出し元のプログラムカウンタを記録するためのスタック
     @@orders = []
 
     def self.run(orders)
@@ -343,7 +343,7 @@ end
 
 #whitespaceを表すクラス
 class Whitespace
-    @@commandStr = [" ","\t","\n"] #使用する文字列　0から 0 = \s , 1 = \t , 2 = \n の役割　字句解析で使用
+    @@commandStr = [" ","\t","\n"] #使用する文字列 0から 0 = \s , 1 = \t , 2 = \n の役割 字句解析で使用
 
     def self.compile(file)
         @@commandList = makeCommancList()#構文解析で使用
@@ -357,7 +357,7 @@ class Whitespace
         rescue => e
             p e
         end
-        #p orders #今回はここまで
+        #p orders 
         #実行
         begin
             StackAndHeapEditer.run(orders)
