@@ -293,12 +293,12 @@ class Flow < StackAndHeapEditer
     end
 
     
-    def tn () #パラメータあり サブルーチンを終了し、元の場所へ
+    def tn () # サブルーチンを終了し、元の場所へ
         @@programCounter = @@callPoint.pop()
     end
 
 
-    def nn ()#パラメータあり プログラムの終了
+    def nn ()# プログラムの終了
         @@endFlag = true
     end
 end
