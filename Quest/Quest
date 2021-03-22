@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+require_relative 'QuestLib/QuestTokenList'
+require_relative 'QuestLib/QuestCompiler'
+require_relative 'QuestLib/QuestRuner'
+require 'strscan'
+
+
+
+class Quest 
+	def initialize()
+		#拡張子を確認
+		@compiler = QuestCompiler.new
+		@runer = QuestRuner.new
+	end
+
+	def run(fileName)
+		if !File.extname(fileName) == ".qe" then
+			puts "おきのどくですが\nぼうけんのしょ " + fileName + " は\nよみこめませんでした。"
+			return nil
+		end
+
+		begin
+			file = open(fileName)
+		rescue => e
+			puts "おきのどくですが\nぼうけんのしょ " + fileName + " は\nよみこめませんでした。"
+			return nil
+		end
+
+		begin
+			expr = @compiler.compile(file)
+			@runer.run(expr,fileName)
+		rescue => e
+			puts e.message
+			return
+		end
+	end
+end
+
+
+
+class Main
+	def initialize
+		#ファイルの読み込み
+		fileName = ARGV[0]#ファイル名取得
+		#ファイルの実行
+		quest = Quest.new.run(fileName)
+	end
+end
+
+Main.new
